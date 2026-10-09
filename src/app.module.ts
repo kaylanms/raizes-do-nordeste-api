@@ -1,6 +1,10 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { AuditoriaModule } from './modules/auditoria/auditoria.module';
+import { FidelidadeModule } from './modules/fidelidade/fidelidade.module';
+import { PagamentosModule } from './modules/pagamentos/pagamentos.module';
+import { PedidosModule } from './modules/pedidos/pedidos.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { EstoqueModule } from './modules/estoque/estoque.module';
 import { ProdutosModule } from './modules/produtos/produtos.module';
@@ -24,6 +28,10 @@ import { PrismaModule } from './shared/prisma/prisma.module';
     UnidadesModule,
     ProdutosModule,
     EstoqueModule,
+    FidelidadeModule,
+    PedidosModule,
+    PagamentosModule,
+    AuditoriaModule,
   ],
   controllers: [HealthController],
   providers: [
