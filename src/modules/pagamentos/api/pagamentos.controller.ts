@@ -20,6 +20,7 @@ import { CurrentUser, Roles } from '../../../shared/guards/decorators';
 import type { UsuarioAutenticado } from '../../../shared/guards/usuario-autenticado';
 import { PagamentosService } from '../application/pagamentos.service';
 import { SolicitarPagamentoDto } from './pagamentos.dto';
+import { ApiErros } from '../../../shared/swagger/api-erros.decorator';
 
 @ApiTags('Pagamentos')
 @ApiBearerAuth()
@@ -39,6 +40,7 @@ export class PagamentosController {
     summary:
       'Solicita o pagamento do pedido ao gateway mock e registra o retorno',
   })
+  @ApiErros(403, 404, 409, 503)
   async pagar(
     @Body() dto: SolicitarPagamentoDto,
     @CurrentUser() user: UsuarioAutenticado,

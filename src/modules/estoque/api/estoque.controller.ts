@@ -5,6 +5,7 @@ import { CurrentUser, Roles } from '../../../shared/guards/decorators';
 import type { UsuarioAutenticado } from '../../../shared/guards/usuario-autenticado';
 import { EstoqueService } from '../application/estoque.service';
 import { ConsultarEstoqueQueryDto, MovimentarEstoqueDto } from './estoque.dto';
+import { ApiErros } from '../../../shared/swagger/api-erros.decorator';
 
 @ApiTags('Estoque')
 @ApiBearerAuth()
@@ -17,6 +18,7 @@ export class EstoqueController {
   @ApiOperation({
     summary: 'Registra entrada ou saída de estoque (GERENTE só na sua unidade)',
   })
+  @ApiErros(403, 404, 409, 422)
   movimentar(
     @Body() dto: MovimentarEstoqueDto,
     @CurrentUser() user: UsuarioAutenticado,

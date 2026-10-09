@@ -21,6 +21,7 @@ import type { Response } from 'express';
 import { CurrentUser, Roles } from '../../../shared/guards/decorators';
 import type { UsuarioAutenticado } from '../../../shared/guards/usuario-autenticado';
 import { PedidosService } from '../application/pedidos.service';
+import { ApiErros } from '../../../shared/swagger/api-erros.decorator';
 import {
   AtualizarStatusDto,
   CriarPedidoDto,
@@ -44,6 +45,7 @@ export class PedidosController {
   @ApiOperation({
     summary: 'Cria um pedido (valida estoque, calcula total e baixa o estoque)',
   })
+  @ApiErros(403, 404, 409, 422)
   async criar(
     @Body() dto: CriarPedidoDto,
     @CurrentUser() user: UsuarioAutenticado,
@@ -80,6 +82,7 @@ export class PedidosController {
     summary:
       'Atualiza o status (cozinha → pronto → entregue / cancelado), conforme perfil',
   })
+  @ApiErros(403, 404, 409, 422)
   atualizarStatus(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: AtualizarStatusDto,

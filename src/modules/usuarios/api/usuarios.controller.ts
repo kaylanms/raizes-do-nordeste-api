@@ -4,6 +4,7 @@ import { CurrentUser, Public } from '../../../shared/guards/decorators';
 import type { UsuarioAutenticado } from '../../../shared/guards/usuario-autenticado';
 import { UsuariosService } from '../application/usuarios.service';
 import { CadastrarUsuarioDto } from './usuarios.dto';
+import { ApiErros } from '../../../shared/swagger/api-erros.decorator';
 
 @ApiTags('Usuários')
 @Controller('usuarios')
@@ -13,6 +14,7 @@ export class UsuariosController {
   @Public()
   @Post()
   @ApiOperation({ summary: 'Cadastra um novo cliente' })
+  @ApiErros(409, 422)
   cadastrar(@Body() dto: CadastrarUsuarioDto) {
     return this.service.cadastrar(dto);
   }
