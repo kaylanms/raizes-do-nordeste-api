@@ -80,8 +80,6 @@ Opcional, para gerar um `JWT_SECRET` forte:
 node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
 
-> **Importante:** o arquivo `.env` nunca vai para o Git. Só o `.env.example` é versionado.
-
 ### 3. Subir o banco de dados
 
 ```bash
