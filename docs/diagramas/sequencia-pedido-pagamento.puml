@@ -1,0 +1,114 @@
+@startuml
+title Diagrama de Sequência - Pedido → Pagamento Externo (mock) → Atualização de Status
+
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam participant {
+  BackgroundColor #FFF8E1
+  BorderColor #1F3864
+}
+skinparam sequence {
+  ArrowColor #1F3864
+  LifeLineBorderColor #1F3864
+}
+autonumber
+
+actor "Cliente\n(App/Web/Totem)" as C
+participant "API\n(Controllers + Guards)" as API
+participant "PedidosService\n(Application)" as PS
+participant "PagamentosService\n(Application)" as PGS
+participant "FidelidadeService\n(Application)" as FS
+participant "Repositórios\n(Infrastructure)" as R
+participant "PagamentoGateway\n(mock)" as GW
+database "PostgreSQL" as DB
+
+== 1. Realizar pedido ==
+C -> API : POST /pedidos {canalPedido, unidadeId, itens, formaPagamento}\nHeader: Authorization + Idempotency-Key
+API -> API : valida JWT, perfil e DTO (canalPedido obrigatório)
+alt token ausente/inválido
+  API --> C : 401 NAO_AUTENTICADO / TOKEN_INVALIDO
+else payload inválido
+  API --> C : 422 VALIDACAO_INVALIDA
+else requisição válida
+  API -> PS : criar(user, dto, chave)
+  PS -> R : buscar pedido pela Idempotency-Key
+  alt chave já usada
+    PS --> API : pedido original
+    API --> C : 200 (sem duplicar)
+  else chave nova
+    PS -> R : buscar itens no cardápio da unidade
+    alt produto fora do cardápio
+      PS --> API : 404 PRODUTO_NAO_ENCONTRADO
+      API --> C : 404
+    else itens válidos
+      PS -> DB : BEGIN
+      PS -> DB : INSERT pedido + itens (preço congelado)
+      loop para cada item
+        PS -> DB : UPDATE estoque ... WHERE quantidade >= qtd
+      end
+      alt estoque insuficiente
+        PS -> DB : ROLLBACK
+        PS --> API : 409 ESTOQUE_INSUFICIENTE
+        API --> C : 409 (details: Disponível: N)
+      else estoque ok
+        PS -> DB : INSERT movimentos_estoque (SAIDA) + logs_auditoria
+        PS -> DB : COMMIT
+        PS --> API : pedido AGUARDANDO_PAGAMENTO
+        API --> C : 201 {pedidoId, status, total, canalPedido}
+      end
+    end
+  end
+end
+
+== 2. Solicitar pagamento (serviço externo mock) ==
+C -> API : POST /pagamentos {pedidoId}
+API -> PGS : pagar(user, dto, chave)
+PGS -> R : buscar pedido (acesso do cliente) e criar Pagamento PENDENTE
+alt pedido não está AGUARDANDO_PAGAMENTO
+  PGS --> API : 409 PEDIDO_NAO_AGUARDA_PAGAMENTO
+  API --> C : 409
+else aguardando pagamento
+  PGS -> GW : cobrar(pedidoId, valor, metodo)
+  alt gateway indisponível
+    GW --> PGS : GatewayIndisponivelError
+    PGS -> R : registra falha (pagamento segue PENDENTE)
+    PGS --> API : 503 SERVICO_PAGAMENTO_INDISPONIVEL
+    API --> C : 503 (pedido continua AGUARDANDO_PAGAMENTO; tentar de novo)
+  else gateway respondeu
+    GW --> PGS : {status, referenciaExterna, payload}
+    PGS -> DB : BEGIN
+    PGS -> DB : UPDATE pagamento (status + payload)
+    alt APROVADO
+      PGS -> DB : UPDATE pedido AGUARDANDO_PAGAMENTO → PAGO
+      PGS -> FS : acumular(clienteId, total)
+      FS -> DB : INSERT movimentos_pontos (se houver consentimento ativo)
+      PGS -> DB : INSERT logs_auditoria (PAGAMENTO_APROVADO)
+    else RECUSADO
+      PGS -> DB : UPDATE pedido → CANCELADO
+      PGS -> DB : devolve estoque (ESTORNO) e pontos resgatados
+      PGS -> DB : INSERT logs_auditoria (PAGAMENTO_RECUSADO)
+    end
+    PGS -> DB : COMMIT
+    PGS --> API : resposta (status do pagamento + payload + pedidoStatus)
+    API --> C : 201 {status: APROVADO|RECUSADO, pedidoStatus, payload}
+  end
+end
+
+== 3. Atualização de status do pedido ==
+C -> API : PATCH /pedidos/{id}/status {status} (cozinha / atendente)
+API -> PS : atualizarStatus(user, id, dto)
+PS -> PS : valida transição (RN04) e perfil autorizado
+alt transição inválida
+  PS --> API : 409 TRANSICAO_INVALIDA
+  API --> C : 409
+else perfil sem permissão
+  PS --> API : 403 ACESSO_NEGADO
+  API --> C : 403
+else transição permitida
+  PS -> DB : UPDATE status (condicional ao status atual) + logs_auditoria
+  PS --> API : pedido atualizado
+  API --> C : 200 {status: EM_PREPARO | PRONTO | ENTREGUE}
+end
+@enduml
