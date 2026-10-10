@@ -4,15 +4,19 @@ services:
     container_name: raizes-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: raizes
-      POSTGRES_PASSWORD: RaizesDB2026Macae
-      POSTGRES_DB: raizes_db
+      POSTGRES_USER: ${POSTGRES_USER:-raizes}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-raizes123}
+      POSTGRES_DB: ${POSTGRES_DB:-raizes_db}
     ports:
-      - '5433:5432'
+      - '${POSTGRES_PORT:-5433}:5432'
     volumes:
       - raizes_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U raizes -d raizes_db']
+      test:
+        [
+          'CMD-SHELL',
+          'pg_isready -U ${POSTGRES_USER:-raizes} -d ${POSTGRES_DB:-raizes_db}',
+        ]
       interval: 5s
       timeout: 5s
       retries: 10

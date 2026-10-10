@@ -2,13 +2,7 @@ import 'dotenv/config';
 import { PrismaClient, Perfil } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: 'postgresql://raizes:RaizesDB2026Macae@127.0.0.1:5433/raizes_db?schema=public',
-    },
-  },
-});
+const prisma = new PrismaClient();
 
 // Senha única, ambiente de teste e  correção...
 const SENHA_TESTE = 'Senha@123';
