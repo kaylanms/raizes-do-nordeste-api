@@ -1,124 +1,275 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Raízes do Nordeste: API Back-End
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST da rede de restaurantes **Raízes do Nordeste**, desenvolvida para o Projeto Multidisciplinar (Trilha Back-End) da UNINTER.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Fluxo crítico entregue de ponta a ponta: **Pedido → Pagamento (mock) → Atualização de status**, com pedidos multicanal, estoque por unidade, fidelidade com consentimento (LGPD), autenticação JWT com perfis e trilha de auditoria.
 
-## Description
+- **Autor:** Kaylan de Mattos Izaac · RU 4636648
+- **Disciplina:** Projeto Multidisciplinar, Trilha Back-End (Prof. Me. Luciane Yanase Kanashiro)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Evidências e links
 
-## Project setup
+| Item                                         | Onde                                                                                                                 |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Repositório                                  | https://github.com/kaylanms/raizes-do-nordeste-api                                                                   |
+| Swagger (local)                              | http://localhost:3000/docs                                                                                           |
+| Contrato OpenAPI (JSON)                      | http://localhost:3000/docs-json · cópia em [`docs/openapi.json`](docs/openapi.json)                                  |
+| Coleção Postman                              | [`docs/postman/raizes-do-nordeste.postman_collection.json`](docs/postman/raizes-do-nordeste.postman_collection.json) |
+| Resultado da execução dos testes             | [`docs/evidencias/`](docs/evidencias/)                                                                               |
+| DER                                          | [`docs/diagramas/der.png`](docs/diagramas/der.png) · detalhes em [`docs/der.md`](docs/der.md)                        |
+| Diagramas (casos de uso, classes, sequência) | [`docs/diagramas/`](docs/diagramas/)                                                                                 |
+| Requisitos e regras de negócio               | [`docs/requisitos.md`](docs/requisitos.md)                                                                           |
+| Casos de uso                                 | [`docs/casos-de-uso.md`](docs/casos-de-uso.md)                                                                       |
+| Plano de testes (T01 a T59)                  | [`docs/plano-de-testes.md`](docs/plano-de-testes.md)                                                                 |
+| Deploy                                       | Não aplicável (execução local)                                                                                       |
 
-```bash
-$ npm install
-```
+## Stack
 
-## Compile and run the project
+| Camada              | Tecnologia              |
+| ------------------- | ----------------------- |
+| Linguagem / runtime | TypeScript, Node.js 20+ |
+| Framework           | NestJS                  |
+| Banco de dados      | PostgreSQL 16 (Docker)  |
+| ORM / migrations    | Prisma 6                |
+| Autenticação        | JWT + bcrypt            |
+| Documentação        | Swagger / OpenAPI       |
+| Testes              | Postman + Newman        |
 
-```bash
-# development
-$ npm run start
+## Requisitos
 
-# watch mode
-$ npm run start:dev
+- **Node.js 20 ou superior** e npm
+- **Docker** com Docker Compose (no Windows, Docker Desktop)
+- **Git**
+- Porta **3000** (API) e **5433** (banco) livres. Se a 5433 estiver ocupada, veja a seção _Problemas comuns_.
 
-# production mode
-$ npm run start:prod
-```
+## Como executar (passo a passo)
 
-## Run tests
+Os comandos abaixo funcionam no **PowerShell, no Terminal do Mac/Linux e no Git Bash**. Onde há diferença, os dois formatos estão indicados.
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 1. Clonar e instalar as dependências
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+git clone https://github.com/kaylanms/raizes-do-nordeste-api
+cd raizes-do-nordeste-api
+npm install
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 2. Configurar as variáveis de ambiente
 
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-To add it to this project:
+Copie o arquivo de exemplo:
 
 ```bash
-$ npm install @nestjs/observe
+cp .env.example .env              # Mac/Linux/Git Bash
+Copy-Item .env.example .env       # Windows PowerShell
 ```
 
-Then follow the [setup guide](https://docs.nestjs.com/observability/overview) - it takes a single import and an app key.
+**Os valores do `.env.example` já funcionam em ambiente local; basta copiar o arquivo.** Para referência:
 
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
+| Variável                                            | Descrição                                                                       |
+| --------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | Credenciais do banco criado pelo Docker                                         |
+| `POSTGRES_PORT`                                     | Porta do banco no seu computador (use 5433)                                     |
+| `DATABASE_URL`                                      | URL de conexão; deve usar **a mesma senha e a mesma porta** acima               |
+| `PORT`                                              | Porta da API (padrão 3000)                                                      |
+| `JWT_SECRET`                                        | Segredo do token. Em uso real, gere um valor longo e aleatório (comando abaixo) |
+| `JWT_EXPIRES_IN`                                    | Validade do token em segundos (padrão 3600)                                     |
 
-## Resources
+Opcional, para gerar um `JWT_SECRET` forte:
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+> **Importante:** o arquivo `.env` nunca vai para o Git. Só o `.env.example` é versionado.
 
-## Support
+### 3. Subir o banco de dados
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+docker compose up -d
+docker compose ps          # o serviço "db" deve aparecer como "healthy"
+```
 
-## Stay in touch
+### 4. Criar as tabelas (migrations) e carregar os dados de teste (seed)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npx prisma generate
+npx prisma migrate deploy
+npm run db:seed
+```
 
-## License
+O seed cria 3 unidades, 6 produtos, cardápio e estoque por unidade, 1 promoção e 6 usuários de teste. Ao final, deve aparecer "Seed concluído com sucesso."
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### 5. Iniciar a API
+
+```bash
+npm run start:dev
+```
+
+Saída esperada:
+
+```
+API:     http://localhost:3000
+Swagger: http://localhost:3000/docs
+```
+
+Para executar a versão compilada: `npm run build` e depois `npm run start:prod`.
+
+Para conferir que está no ar: abra http://localhost:3000/health (deve mostrar `{"status":"ok", ...}`).
+
+### 6. Acessar a documentação
+
+Abra **http://localhost:3000/docs**. Para testar rotas protegidas:
+
+1. Execute `POST /auth/login` com um dos usuários abaixo;
+2. Copie o `accessToken` da resposta;
+3. Clique em **Authorize** e cole **apenas o token** (sem a palavra "Bearer").
+
+## Usuários de teste
+
+Senha de todos: `Senha@123` (somente para ambiente de teste).
+
+| Perfil    | E-mail               | Observação                      |
+| --------- | -------------------- | ------------------------------- |
+| ADMIN     | admin@raizes.com     | Acesso total                    |
+| GERENTE   | gerente@raizes.com   | Vinculado à Matriz              |
+| ATENDENTE | atendente@raizes.com | Vinculado à Matriz              |
+| COZINHA   | cozinha@raizes.com   | Vinculado à Matriz              |
+| CLIENTE   | maria@exemplo.com    | Com consentimento de fidelidade |
+| CLIENTE   | joao@exemplo.com     | Sem consentimento de fidelidade |
+
+Dados de teste úteis: a _Macaxeira Frita_ tem **1 unidade** em estoque na Matriz (para testar o 409), e a unidade de Salvador **não vende Bolo de Rolo** (para testar o 404). A promoção `BEMVINDO10` dá 10% de desconto.
+
+## Como rodar os testes
+
+A coleção Postman cobre 59 cenários (34 positivos e 25 negativos). Plano completo em [`docs/plano-de-testes.md`](docs/plano-de-testes.md).
+
+**Pelo Postman**
+
+1. Suba o banco e a API (passos 3 a 5).
+2. Importe `docs/postman/raizes-do-nordeste.postman_collection.json`.
+3. Use _Run collection_ **na ordem das pastas** (00 a 09). Tokens e IDs são guardados automaticamente em variáveis da coleção. O endereço da API está na variável `baseUrl` (padrão `http://localhost:3000`).
+
+**Pela linha de comando (Newman)**, com a API rodando em outro terminal:
+
+```bash
+npm run test:api
+```
+
+O resultado também é gravado em `docs/evidencias/newman-resultado.json`. Esperado: nenhuma falha.
+
+**Para partir de um banco limpo** (por exemplo, depois de uma execução interrompida): pare a API, execute `npm run db:reset` (recria as tabelas e roda o seed) e inicie a API de novo.
+
+## Arquitetura
+
+Estrutura modular, com quatro camadas dentro de cada módulo:
+
+```
+src/
+├── modules/
+│   └── <recurso>/            auth, usuarios, unidades, produtos, estoque,
+│       ├── domain/           pedidos, pagamentos, fidelidade, auditoria
+│       ├── application/
+│       ├── infrastructure/
+│       └── api/
+├── shared/                   errors, guards, audit, pagination, prisma
+└── main.ts                   bootstrap, Swagger e request id
+prisma/                       schema.prisma, migrations/, seed.ts
+docs/                         diagramas, postman, plano de testes, requisitos
+```
+
+| Camada             | Responsabilidade                                                                                         |
+| ------------------ | -------------------------------------------------------------------------------------------------------- |
+| **Domain**         | Regras puras (máquina de estados do pedido, regras de pontos) e contratos (interface `PagamentoGateway`) |
+| **Application**    | Casos de uso que orquestram o fluxo (`PedidosService`, `PagamentosService`, `FidelidadeService`...)      |
+| **Infrastructure** | Repositórios Prisma, hash de senha, gateway de pagamento mock, auditoria                                 |
+| **API**            | Controllers, DTOs com validação, guards de autenticação/perfil, Swagger e filtro global de erros         |
+
+## Endpoints principais
+
+| Recurso      | Rotas                                                                                                                 | Permissão                    |
+| ------------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Autenticação | `POST /auth/login`                                                                                                    | Público                      |
+| Usuários     | `POST /usuarios` · `GET /usuarios/me` · `DELETE /usuarios/me` (anonimiza)                                             | Público / autenticado        |
+| Unidades     | `GET /unidades` · `POST /unidades`                                                                                    | Autenticado / ADMIN          |
+| Produtos     | `GET /produtos` · `GET /produtos/{id}` · `POST` · `PATCH` · `DELETE`                                                  | Autenticado / ADMIN, GERENTE |
+| Cardápio     | `GET /unidades/{id}/cardapio` · `PUT /unidades/{id}/cardapio/{produtoId}`                                             | Autenticado / ADMIN, GERENTE |
+| Estoque      | `POST /estoque/movimentos` · `GET /estoque?unidadeId=`                                                                | ADMIN, GERENTE (da unidade)  |
+| Pedidos      | `POST /pedidos` · `GET /pedidos?canalPedido=&status=&unidadeId=` · `GET /pedidos/{id}` · `PATCH /pedidos/{id}/status` | Conforme perfil              |
+| Pagamentos   | `POST /pagamentos` · `GET /pagamentos/{id}`                                                                           | Conforme perfil              |
+| Fidelidade   | `POST/DELETE /fidelidade/consentimento` · `GET /fidelidade/saldo` · `GET /fidelidade/historico`                       | CLIENTE                      |
+| Auditoria    | `GET /auditoria`                                                                                                      | ADMIN, GERENTE               |
+| Saúde        | `GET /health`                                                                                                         | Público                      |
+
+Detalhes, exemplos de request/response e códigos de status estão no Swagger.
+
+### Exemplo: criar pedido (multicanal)
+
+```http
+POST /pedidos
+Authorization: Bearer <token>
+Idempotency-Key: pedido-001        (opcional)
+
+{
+  "canalPedido": "TOTEM",
+  "unidadeId": 1,
+  "itens": [ { "produtoId": 1, "quantidade": 2 } ],
+  "formaPagamento": "MOCK"
+}
+```
+
+- `canalPedido` é **obrigatório**: `APP`, `TOTEM`, `BALCAO`, `PICKUP` ou `WEB`. Ausente ou inválido retorna **422**.
+- Filtro por canal: `GET /pedidos?canalPedido=TOTEM`.
+
+## Regras de negócio principais
+
+- **Estoque por unidade:** o pedido só é criado se **todos** os itens têm estoque. A baixa é atômica e na mesma transação. Sem estoque, retorna **409** e nada é gravado.
+- **Status do pedido:** `AGUARDANDO_PAGAMENTO → PAGO → EM_PREPARO → PRONTO → ENTREGUE`; cancelamento só enquanto aguarda pagamento. Transições inválidas retornam **409**; perfil sem permissão, **403**.
+- **Pagamento mock** (`POST /pagamentos`): aprovado (pedido `PAGO`), recusado (pedido `CANCELADO`, estoque e pontos devolvidos) ou gateway indisponível (**503**, pedido preservado para nova tentativa). Para forçar o resultado em testes, envie `"simulacao": "APROVAR" | "RECUSAR" | "INDISPONIVEL"`.
+- **Idempotência:** repetir a mesma `Idempotency-Key` em `POST /pedidos` ou `POST /pagamentos` devolve o resultado original (**200**), sem duplicar.
+- **Fidelidade:** 1 ponto a cada R$ 1,00 pago; 1 ponto = R$ 0,10 de desconto; **somente com consentimento ativo**.
+- **Promoção:** informe `codigoPromocao` no pedido (por exemplo, `BEMVINDO10`).
+
+## Padrão de erro
+
+Toda falha retorna o mesmo JSON:
+
+```json
+{
+  "error": "ESTOQUE_INSUFICIENTE",
+  "message": "Não há quantidade suficiente para um ou mais itens.",
+  "details": [{ "field": "itens[0].quantidade", "issue": "Disponível: 1" }],
+  "timestamp": "2026-10-09T12:00:00.000Z",
+  "path": "/pedidos",
+  "requestId": "uuid"
+}
+```
+
+## Segurança e LGPD
+
+- Senhas armazenadas apenas como **hash bcrypt**; o hash nunca é devolvido.
+- **JWT** com expiração; guard global exige token (rotas públicas são marcadas explicitamente).
+- **Autorização por perfil** e por unidade; o cliente só enxerga os próprios pedidos.
+- **Minimização:** coleta apenas nome, e-mail e senha (sem CPF, telefone ou endereço).
+- **Consentimento** do programa de fidelidade registrado com finalidade, base legal, versão do termo e datas; revogável.
+- **Anonimização:** `DELETE /usuarios/me` remove os dados pessoais e mantém o histórico de pedidos sem identificar a pessoa.
+- **Auditoria** de ações sensíveis (login, pedido, status, pagamento, consentimento) consultável em `GET /auditoria`.
+- Erros inesperados retornam 500 genérico, sem detalhes internos.
+- **Segredos:** o `.env` não é versionado; os valores do `.env.example` são apenas de exemplo para uso local.
+
+## Decisões e limitações
+
+Implementado: autenticação e perfis, unidades, produtos e cardápio por unidade, estoque, pedidos multicanal, pagamento mock, atualização de status, fidelidade com consentimento, aplicação de promoção e auditoria.
+
+Fica como **proposta** (fora do MVP): cadastro de promoções e de usuários da equipe via API, refresh token e logout, limitação de taxa (rate limit) e deploy. Pagamento real está fora de escopo, conforme o roteiro.
+
+## Problemas comuns
+
+| Sintoma                                                    | Causa provável                                                                                                                | Solução                                                                                                                             |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `P1000` / "Authentication failed" ao rodar o seed ou a API | A senha do `.env` é diferente da usada ao criar o volume do Docker, ou outro PostgreSQL local está respondendo na mesma porta | Pare a API, rode `docker compose down -v`, confira `POSTGRES_PASSWORD`, `POSTGRES_PORT` e `DATABASE_URL` no `.env` e suba de novo   |
+| Porta 5432 ocupada                                         | Outro PostgreSQL local                                                                                                        | No `.env`, troque `POSTGRES_PORT` e a porta dentro de `DATABASE_URL` (por exemplo, para 5433) e rode `docker compose up -d` de novo |
+| `Cannot find module '@prisma/client'`                      | Client não gerado                                                                                                             | `npx prisma generate`                                                                                                               |
+| 401 em todas as rotas no Swagger                           | Token não informado                                                                                                           | Faça login e use **Authorize** com o token puro                                                                                     |
+| Avisos amarelos sobre `package.json#prisma`                | Aviso de depreciação do Prisma 7                                                                                              | Podem ser ignorados; não afetam a execução                                                                                          |
+| Testes do Newman falhando no meio                          | Execução anterior interrompida (consentimento ativo)                                                                          | Pare a API, `npm run db:reset`, inicie a API de novo                                                                                |
+| `relation "..." does not exist`                            | Migrations não aplicadas                                                                                                      | `npx prisma migrate deploy`                                                                                                         |
